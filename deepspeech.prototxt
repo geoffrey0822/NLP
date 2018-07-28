@@ -1,0 +1,11 @@
+layer{
+    name: "input"
+    type: "Python"
+    top: "data"
+    top: "label"
+    python_param{
+        module: "caffe.audioInputLayer"
+        layer: "AudioInputLayer"
+        param_str: "{'batch_size':16,'annotation_path':'c:/speech/annotation/train.ldb','data_dir':'c:/speech','word_dim':7880700,'word_length':36,'encoded':1,'total_size':195776}"
+    }
+}

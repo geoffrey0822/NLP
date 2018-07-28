@@ -1,0 +1,11 @@
+base_lr: 1e-2
+lr_policy: "fixed"
+max_iter: 100
+momentum: 0.9
+weight_decay: 0.0005
+solver_mode: CPU
+snapshot: 100
+snapshot_prefix: "deepspeech"
+display: 1
+type: "SGD"
+net: "train_deepspeech.prototxt"

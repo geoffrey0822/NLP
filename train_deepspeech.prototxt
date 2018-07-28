@@ -1,0 +1,433 @@
+layer{
+    name: "input"
+    type: "Python"
+    top: "data"
+    top: "label"
+    python_param{
+        module: "caffe.audioInputLayer"
+        layer: "AudioInputLayer"
+        param_str: "{'batch_size':1,'annotation_path':'c:/speech/annotation2/train.ldb','data_dir':'c:/speech','word_dim':8005,'word_length':36,'encoded':1,'total_size':195776}"
+    }
+}
+layer{
+     name: "conv1"
+     type: "Convolution"
+     bottom: "data"
+     top: "conv1"
+     param{
+         lr_mult: 1
+         decay_mult: 1
+     }
+     param{
+         lr_mult: 2
+         decay_mult: 0
+     }
+     convolution_param{
+         num_output: 64
+         kernel_h: 1
+         kernel_w: 7
+         dilation: 1
+         pad_h:0
+         pad_w:3
+     }
+}
+# hidden 1 module
+layer{
+     name: "hidden1/conv1"
+     type: "Convolution"
+     bottom: "conv1"
+     top: "hidden1/conv1"
+     param{
+         lr_mult: 1
+         decay_mult: 1
+     }
+     param{
+         lr_mult: 2
+         decay_mult: 0
+     }
+     convolution_param{
+         num_output: 64
+         kernel_h: 1
+         kernel_w: 7
+         dilation: 1
+         pad_h: 0
+         pad_w: 2
+     }
+}
+layer{
+    name: "hidden1/tan1"
+    type: "TanH"
+    bottom: "hidden1/conv1"
+    top: "hidden1/tan1"
+
+}
+layer{
+    name: "hidden1/sig1"
+    type: "Sigmoid"
+    bottom: "hidden1/conv1"
+    top: "hidden1/sig1"
+}
+layer{
+    name: "hidden1/prod"
+    type: "Eltwise"
+    bottom: "hidden1/tan1"
+    bottom: "hidden1/sig1"
+    top: "hidden1/feat"
+    eltwise_param{
+        operation: PROD
+    }
+}
+layer{
+    name: "hidden1/conv1x1"
+    type: "Convolution"
+    bottom: "hidden1/feat"
+    top: "hidden1/conv1x1"
+    param{
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param{
+        lr_mult: 2
+        decay_mult: 0
+    }
+    convolution_param{
+        num_output: 64
+        kernel_size:1
+         pad_h: 0
+         pad_w: 1
+    }
+}
+layer{
+    name: "hidden1/tan2"
+    type: "TanH"
+    bottom: "hidden1/conv1x1"
+    top: "hidden1/conv1x1"
+}
+layer{
+    name: "hidden1/res"
+    type: "Eltwise"
+    bottom: "conv1"
+    bottom: "hidden1/conv1x1"
+    top: "hidden1"
+}
+# hidden 2 module
+layer{
+     name: "hidden2/conv1"
+     type: "Convolution"
+     bottom: "hidden1"
+     top: "hidden2/conv1"
+     param{
+         lr_mult: 1
+         decay_mult: 1
+     }
+     param{
+         lr_mult: 2
+         decay_mult: 0
+     }
+     convolution_param{
+         num_output: 64
+         kernel_h: 1
+         kernel_w: 7
+         dilation: 4
+         pad_h: 0
+         pad_w: 2
+     }
+}
+layer{
+    name: "hidden2/tan1"
+    type: "TanH"
+    bottom: "hidden2/conv1"
+    top: "hidden2/tan1"
+
+}
+layer{
+    name: "hidden2/sig1"
+    type: "Sigmoid"
+    bottom: "hidden2/conv1"
+    top: "hidden2/sig1"
+}
+layer{
+    name: "hidden2/prod"
+    type: "Eltwise"
+    bottom: "hidden2/tan1"
+    bottom: "hidden2/sig1"
+    top: "hidden2/feat"
+    eltwise_param{
+        operation: PROD
+    }
+}
+layer{
+    name: "hidden2/conv1x1"
+    type: "Convolution"
+    bottom: "hidden2/feat"
+    top: "hidden2/conv1x1"
+    param{
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param{
+        lr_mult: 2
+        decay_mult: 0
+    }
+    convolution_param{
+        num_output: 64
+        kernel_size:1
+         pad_h: 0
+         pad_w: 10
+    }
+}
+layer{
+    name: "hidden2/tan2"
+    type: "TanH"
+    bottom: "hidden2/conv1x1"
+    top: "hidden2/conv1x1"
+}
+layer{
+    name: "hidden2/res"
+    type: "Eltwise"
+    bottom: "hidden1"
+    bottom: "hidden2/conv1x1"
+    top: "hidden2"
+}
+# hidden 3 module
+layer{
+     name: "hidden3/conv1"
+     type: "Convolution"
+     bottom: "hidden2"
+     top: "hidden3/conv1"
+     param{
+         lr_mult: 1
+         decay_mult: 1
+     }
+     param{
+         lr_mult: 2
+         decay_mult: 0
+     }
+     convolution_param{
+         num_output: 64
+         kernel_h: 1
+         kernel_w: 7
+         dilation: 8
+         pad_h: 0
+         pad_w: 2
+     }
+}
+layer{
+    name: "hidden3/tan1"
+    type: "TanH"
+    bottom: "hidden3/conv1"
+    top: "hidden3/tan1"
+
+}
+layer{
+    name: "hidden3/sig1"
+    type: "Sigmoid"
+    bottom: "hidden3/conv1"
+    top: "hidden3/sig1"
+}
+layer{
+    name: "hidden3/prod"
+    type: "Eltwise"
+    bottom: "hidden3/tan1"
+    bottom: "hidden3/sig1"
+    top: "hidden3/feat"
+    eltwise_param{
+        operation: PROD
+    }
+}
+layer{
+    name: "hidden3/conv1x1"
+    type: "Convolution"
+    bottom: "hidden3/feat"
+    top: "hidden3/conv1x1"
+    param{
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param{
+        lr_mult: 2
+        decay_mult: 0
+    }
+    convolution_param{
+        num_output: 64
+        kernel_size:1
+         pad_h: 0
+         pad_w: 22
+    }
+}
+layer{
+    name: "hidden3/tan2"
+    type: "TanH"
+    bottom: "hidden3/conv1x1"
+    top: "hidden3/conv1x1"
+}
+layer{
+    name: "hidden3/res"
+    type: "Eltwise"
+    bottom: "hidden2"
+    bottom: "hidden3/conv1x1"
+    top: "hidden3"
+}
+# hidden 4 module
+layer{
+     name: "hidden4/conv1"
+     type: "Convolution"
+     bottom: "hidden3"
+     top: "hidden4/conv1"
+     param{
+         lr_mult: 1
+         decay_mult: 1
+     }
+     param{
+         lr_mult: 2
+         decay_mult: 0
+     }
+     convolution_param{
+         num_output: 64
+         kernel_h: 1
+         kernel_w: 7
+         dilation: 16
+         pad_h: 0
+         pad_w: 2
+     }
+}
+layer{
+    name: "hidden4/tan1"
+    type: "TanH"
+    bottom: "hidden4/conv1"
+    top: "hidden4/tan1"
+
+}
+layer{
+    name: "hidden4/sig1"
+    type: "Sigmoid"
+    bottom: "hidden4/conv1"
+    top: "hidden4/sig1"
+}
+layer{
+    name: "hidden4/prod"
+    type: "Eltwise"
+    bottom: "hidden4/tan1"
+    bottom: "hidden4/sig1"
+    top: "hidden4/feat"
+    eltwise_param{
+        operation: PROD
+    }
+}
+layer{
+    name: "hidden4/conv1x1"
+    type: "Convolution"
+    bottom: "hidden4/feat"
+    top: "hidden4/conv1x1"
+    param{
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param{
+        lr_mult: 2
+        decay_mult: 0
+    }
+    convolution_param{
+        num_output: 64
+        kernel_size:1
+         pad_h: 0
+         pad_w: 46
+    }
+}
+layer{
+    name: "hidden4/tan2"
+    type: "TanH"
+    bottom: "hidden4/conv1x1"
+    top: "hidden4/conv1x1"
+}
+layer{
+    name: "hidden4/res"
+    type: "Eltwise"
+    bottom: "hidden3"
+    bottom: "hidden4/conv1x1"
+    top: "hidden4"
+}
+layer{
+    name: "add"
+    type: "Eltwise"
+    bottom: "hidden1"
+    bottom: "hidden2"
+    bottom: "hidden3"
+    bottom: "hidden4"
+    top: "combined"
+}
+layer{
+    name: "relu_f1"
+    type: "ReLU"
+    bottom: "combined"
+    top: "combined"
+}
+layer{
+    name: "conv_f1"
+    type: "Convolution"
+    bottom: "combined"
+    top: "conv_f1"
+    param{
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param{
+        lr_mult: 2
+        decay_mult: 0
+    }
+    convolution_param{
+        num_output: 64
+        kernel_size:1
+    }
+}
+layer{
+    name: "relu_f2"
+    type: "ReLU"
+    bottom: "conv_f1"
+    top: "conv_f1"
+}
+layer{
+    name: "pool_f2"
+    type: "Pooling"
+    bottom: "conv_f1"
+    top: "pool_f2"
+    pooling_param{
+        kernel_size: 7
+        stride: 11000
+        pool: AVE
+    }
+}
+layer{
+    name: "fc"
+    type: "Convolution"
+    bottom: "pool_f2"
+    top: "fc"
+    param{
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param{
+        lr_mult: 2
+        decay_mult: 0
+    }
+    convolution_param{
+        num_output: 8005
+        kernel_w: 1
+        kernel_h: 1
+        stride_h: 1
+        stride_w: 1
+    }
+}
+layer{
+    name: "relu_fc"
+    type: "ReLU"
+    bottom: "fc"
+    top: "fc"
+}
+layer{
+    name: "loss"
+    type: "SoftmaxWithLoss"
+    bottom: "fc"
+    bottom: "label"
+    top: "loss"
+}
