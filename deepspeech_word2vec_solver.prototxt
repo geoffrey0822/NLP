@@ -1,0 +1,11 @@
+base_lr: 1e-2
+lr_policy: "fixed"
+max_iter: 12421440
+momentum: 0.9
+weight_decay: 0.0005
+solver_mode: GPU
+snapshot: 4140480
+snapshot_prefix: "deepspeech_word2vec"
+display: 1
+type: "SGD"
+net: "train_deepspeech_word2vec.prototxt"

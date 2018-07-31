@@ -1,0 +1,67 @@
+layer{
+    name: "input"
+    type: "Python"
+    top: "data"
+    top: "label"
+    python_param{
+        module: "caffe.wordpairInputLayer"
+        layer: "WordPairInputLayer"
+        param_str: "{'batch_size':16,'dataset':'c:/speech/word2vec/rev_train.ldb','total':6624763}"
+    }
+}
+layer{
+    name: "embed"
+    type: "Embed"
+    bottom: "data"
+    top: "embed"
+    param{
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param{
+        lr_mult: 2
+        decay_mult: 0
+    }
+    embed_param{
+        num_output: 250
+        input_dim: 8005
+    }
+}
+layer{
+    name: "relu1"
+    type: "ReLU"
+    bottom: "embed"
+    top: "embed"
+}
+layer{
+    name: "fc"
+    type: "InnerProduct"
+    bottom: "embed"
+    top: "fc"
+    inner_product_param{
+        num_output: 8005
+    }
+}
+layer{
+    name: "relu2"
+    type: "ReLU"
+    bottom: "fc"
+    top: "fc"
+}
+layer{
+    name: "loss"
+    type: "SoftmaxWithLoss"
+    bottom: "fc"
+    bottom: "data"
+    top: "loss"
+}
+layer{
+    name: "top-5"
+    type: "Accuracy"
+    bottom: "fc"
+    bottom: "data"
+    top: "top-5"
+    accuracy_param{
+        top_k: 5
+    }
+}
